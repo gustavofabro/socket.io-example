@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Socket.io</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+</head>
+<body>
+    <p>Teste de Socket.io</p>
+    <button id="btn">Mandar</button>
+    <div id="messages">
+
+    </div>
+    <script>
+        let socket = io('http://localhost:3000')
+
+        function renderMessage(message) {
+            $('#messages').append(`<p>${message.data}</p>`)
+        }
+
+        socket.on('receivedMessage', renderMessage)
+        socket.on('previousMessages', messages => {
+            messages.forEach(renderMessage);
+        })
+
+        $('#btn').on('click', event => {
+            let message = {
+                data: Date.now()
+            }
+
+            renderMessage(message)
+
+            socket.emit('sendMessage', message)
+        })
+    </script>
+</body>
+</html>
